@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="warning" *ngIf="hasFailed">
+    <p>E-mail or password is incorrect. Please try again.</p>
+  </div>
+
+  <ion-item>
+    <ion-label position="floating">E-mail</ion-label>
+    <ion-input type="email" [(ngModel)]="email"></ion-input>
+  </ion-item>
+
+  <ion-item style="padding-bottom: 20px;">
+    <ion-label position="floating">Password</ion-label>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+
+  <ion-button (click)="login()" expand="block">Login</ion-button>
+  <ion-button (click)="register()" expand="block" color="secondary">Register</ion-button>
+</ion-content>

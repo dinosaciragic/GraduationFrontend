@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="user && user.isClient" [fullscreen]="true">
+  <ion-card (click)="navigateToRestaurants()" style="height: 100px;">
+    Restaurants
+  </ion-card>
+
+  <ion-card (click)="navigateToGroceries()" style="height: 100px;">
+    Groceries
+  </ion-card>
+
+  <ion-card (click)="navigateToShops()" style="height: 100px;">
+    Shops
+  </ion-card>
+
+  <ion-card (click)="navigateToCurrier()" style="height: 100px;">
+    Currier
+  </ion-card>
+
+  <!--   <ion-button (click)="logout()" expand="block">
+      <ion-icon slot="icon-only" name="log-out"></ion-icon>
+    </ion-button> -->
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button (click)="startOrdersModal()" size="small">
+    <ion-icon name="cart-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="startSettingsModal()" size="small">
+    <ion-icon name="settings-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

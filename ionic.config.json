@@ -1,5 +1,7 @@
 {
   "name": "GraduationFrontend",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

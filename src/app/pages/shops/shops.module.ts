@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 
-import { HomePage } from './home.page';
+import { IonicModule } from '@ionic/angular';
+
+
+import { ShopsPage } from './shops.page';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -14,10 +16,10 @@ import { HomePage } from './home.page';
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
+        component: ShopsPage
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [ShopsPage]
 })
-export class HomePageModule {}
+export class ShopsPageModule {}
