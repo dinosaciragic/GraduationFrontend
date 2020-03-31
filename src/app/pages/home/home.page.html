@@ -7,19 +7,19 @@
 </ion-header>
 
 <ion-content *ngIf="user && user.isClient" [fullscreen]="true">
-  <ion-card (click)="navigateToRestaurants()" style="height: 100px;">
+  <ion-card (click)="navigateToRestaurants()" class="restaurant-card" style="background:url('assets/restaurant.jpg')">
     Restaurants
   </ion-card>
 
-  <ion-card (click)="navigateToGroceries()" style="height: 100px;">
+  <ion-card (click)="navigateToGroceries()" class="restaurant-card" style="background:url('assets/groceries.jpg')">
     Groceries
   </ion-card>
 
-  <ion-card (click)="navigateToShops()" style="height: 100px;">
+  <ion-card (click)="navigateToShops()" class="restaurant-card" style="background:url('assets/shops.jpg')">
     Shops
   </ion-card>
 
-  <ion-card (click)="navigateToCurrier()" style="height: 100px;">
+  <ion-card (click)="navigateToCurrier()" class="restaurant-card" style="background:url('assets/currier.jpg')">
     Currier
   </ion-card>
 
