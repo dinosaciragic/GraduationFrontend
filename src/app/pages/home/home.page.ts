@@ -66,4 +66,8 @@ export class HomePage implements OnInit {
     this.router.navigate(['pages', 'currier']);
   }
 
+  navigateToPharmacy() {
+    this.router.navigate(['pages', 'pharmacy']);
+  }
+
 }

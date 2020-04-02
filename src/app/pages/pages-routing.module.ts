@@ -19,6 +19,10 @@ const routes: Routes = [
     path: 'currier',
     loadChildren: () => import('./currier/currier.module').then( m => m.CurrierPageModule)
   },
+  {
+    path: 'pharmacy',
+    loadChildren: () => import('./pharmacy/pharmacy.module').then( m => m.PharmacyPageModule)
+  },
 ];
 
 @NgModule({
