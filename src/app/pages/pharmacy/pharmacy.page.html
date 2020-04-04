@@ -9,5 +9,26 @@
 </ion-header>
 
 <ion-content>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="refresh()" (ionCancel)="resetSearch()" placeholder="Search">
+  </ion-searchbar>
 
+  <ion-list *ngIf="drugs">
+    <ion-item *ngFor="let drug of drugs">
+      <ion-row style="width: 100%;">
+        <ion-col size="10">
+          {{drug.name}}
+        </ion-col>
+
+        <ion-col size=2>
+          <div class="icon"></div>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="infScrEnabled">
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
 </ion-content>

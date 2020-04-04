@@ -55,6 +55,16 @@ export class AuthenticationService {
     return this.authenticationState.value;
   }
 
+  getJWT(): Promise<any> {
+    return this.storage.getItem(TOKEN_KEY).then(jwtLocal => {
+      return jwtLocal;
+    },
+      error => {
+        return {};
+      }
+    );
+  }
+
   checkToken() {
     return this.storage.getItem(TOKEN_KEY).then(res => {
       if (res) {
