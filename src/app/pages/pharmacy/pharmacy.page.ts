@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DrugsService } from 'src/app/services/drugs/drugs.service';
 import { Drug } from 'src/app/models/Drug';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
 
 @Component({
   selector: 'app-pharmacy',
@@ -12,21 +14,37 @@ export class PharmacyPage implements OnInit {
   drugs: Drug[] = [];
   searchTerm: string = "";
   infScrEnabled: boolean = true;
-  private pageSize: number = 15;
+  count: number = 0;
+  orderSum: number = 0;
+  private pageSize: number = 12;
+  private addedDrugs: Drug[] = [];
 
   constructor(
-    private drugsSvc: DrugsService
+    private drugsSvc: DrugsService,
+    private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
-    this.refresh();
+    this.refresh(true);
   }
 
-  async refresh() {
+  async refresh(loader: boolean) {
     try {
+      if (loader) {
+        let loader = await this.loadingCtrl.create({
+          message: "Loading"
+        });
+        await loader.present();
+      }
+
       this.drugs = await this.drugsSvc.getDrugsPaged(1, this.searchTerm);
-      console.log('I got the drugs', this.drugs)
+
+      if (loader) {
+        this.loadingCtrl.dismiss();
+      }
     } catch (error) {
+      this.loadingCtrl.dismiss();
       console.error(error)
     }
 
@@ -40,7 +58,52 @@ export class PharmacyPage implements OnInit {
 
   resetSearch() {
     this.searchTerm = "";
-    this.refresh();
+    this.refresh(false);
+  }
+
+  addToCart(drug: Drug) {
+    if (!this.isAdded(drug)) {
+      this.count++;
+      this.orderSum += drug.price;
+      this.addedDrugs.push(drug);
+    } else {
+      this.count--;
+      this.orderSum -= drug.price;
+
+      for (let i = 0; i < this.addedDrugs.length; i++) {
+        if (this.addedDrugs[i]._id == drug._id) {
+          this.addedDrugs.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  // this is because of add/remove icon
+  isAdded(drug: Drug): boolean {
+    if (this.addedDrugs.length > 0) {
+      for (let i = 0; i < this.addedDrugs.length; i++) {
+        if (this.addedDrugs[i]._id == drug._id) {
+          return true;
+        }
+      }
+
+      return false;
+    } else {
+      return false;
+    }
+  }
+
+  async startCheckout() {
+    let modal = await this.modalCtrl.create(
+      {
+        component: CheckoutComponent,
+        componentProps: {
+          addedDrugs: this.addedDrugs,
+          orderSum: this.orderSum
+        }
+      }
+    );
+    await modal.present();
   }
 
   async doInfinite(infiniteScroll) {
