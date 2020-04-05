@@ -1,0 +1,33 @@
+<ion-header>
+
+  <ion-toolbar>
+    <ion-title>Checkout</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="addedDrugs">
+    <ion-item *ngFor="let drug of addedDrugs">
+      <ion-row style="width: 100%;">
+        <ion-col size="7">
+          {{drug.name}}
+        </ion-col>
+
+        <ion-col class="price" size="3">
+          {{drug.price.toFixed(2)}} KM
+        </ion-col>
+
+        <ion-col (click)="removeFromCart(drug)" size="2">
+          <ion-icon class="add-remove-icon" name="remove-circle-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>
