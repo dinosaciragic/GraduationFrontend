@@ -13,6 +13,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-list-header>
+    <ion-label class="label">Order Items</ion-label>
+  </ion-list-header>
+
   <ion-list *ngIf="addedDrugs">
     <ion-item *ngFor="let drug of addedDrugs">
       <ion-row style="width: 100%;">
@@ -26,6 +30,62 @@
 
         <ion-col (click)="removeFromCart(drug)" size="2">
           <ion-icon class="add-remove-icon" name="remove-circle-outline"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+
+  <ion-list-header>
+    <ion-label class="label">Delivery details</ion-label>
+  </ion-list-header>
+
+  <ion-list>
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 2px;" name="location-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          Grbavica
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <ion-item (click)="showPicker()">
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 12px;" name="time-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          <ion-label *ngIf="deliveryTime">{{deliveryTime}}</ion-label>
+
+          <ion-label *ngIf="!deliveryTime">In how much time want it delivered</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 12px;" name="call-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          <ion-input placeholder="Add contact phone"></ion-input>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 2px;" name="cash-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          Pay with cash on delivery
         </ion-col>
       </ion-row>
     </ion-item>

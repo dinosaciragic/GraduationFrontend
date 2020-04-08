@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Drug } from 'src/app/models/Drug';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PickerController } from '@ionic/angular';
+import { PickerOptions } from "@ionic/core";
 
 @Component({
   selector: 'app-checkout',
@@ -11,8 +12,13 @@ export class CheckoutComponent implements OnInit {
 
   @Input() addedDrugs: Drug[];
   @Input() orderSum: number;
+
+  deliveryTime: string;
+  times: string[] = ["ASAP", "35m", "45m", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h"];
+
   constructor(
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private pickerCtrl: PickerController
   ) { }
 
   ngOnInit() {
@@ -31,6 +37,39 @@ export class CheckoutComponent implements OnInit {
         this.addedDrugs.splice(i, 1);
       }
     }
+  }
+
+  async showPicker() {
+    let options: PickerOptions = {
+      buttons: [
+        {
+          text: "Cancel",
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          handler: (value: any) => {
+            this.deliveryTime = value.value
+            console.log(this.deliveryTime);
+          }
+        }
+      ],
+      columns: [{
+        name: 'Times',
+        options: this.getColumnOptions()
+      }]
+    };
+
+    let picker = await this.pickerCtrl.create(options);
+    picker.present()
+  }
+
+  getColumnOptions() {
+    let options = [];
+    this.times.forEach(x => {
+      options.push({ text: x, value: x });
+    });
+    return options;
   }
 
 }
