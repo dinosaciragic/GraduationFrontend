@@ -5,6 +5,7 @@ import { Constants } from '../shared/constants';
 import { HttpClient } from '@angular/common/http';
 import * as jwt_decode from 'jwt-decode';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { map } from 'rxjs/operators';
 
 const TOKEN_KEY = "tokenkey";
 
@@ -71,6 +72,24 @@ export class AuthenticationService {
         this.authenticationState.next(true);
       }
     });
+  }
+
+  async getCurrentUser(): Promise<any> {
+    let jwt = await this.getJWTDecoded();
+    let data = {
+      id: jwt._id
+    }
+
+    let getUserPromise = new Promise<any>((resolve, reject) => {
+      this.http.post(this.url + '/single', data).subscribe((data) => {
+        resolve(data);
+      }, (error) => {
+        reject("HTTP error");
+      });
+    });
+
+    let user: any = await getUserPromise;
+    return user;
   }
 
   async register(registerData: any): Promise<any> {

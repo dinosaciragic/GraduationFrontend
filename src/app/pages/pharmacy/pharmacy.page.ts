@@ -104,6 +104,22 @@ export class PharmacyPage implements OnInit {
       }
     );
     await modal.present();
+
+    let modalData = await modal.onDidDismiss();
+
+    if (modalData) {
+      this.addedDrugs = [];
+      this.addedDrugs = modalData.data;
+      this.count = 0;
+      this.orderSum = 0;
+
+      if (this.addedDrugs.length > 0) {
+        for (let i = 0; i < this.addedDrugs.length; i++) {
+          this.count++;
+          this.orderSum += this.addedDrugs[i].price;
+        }
+      }
+    }
   }
 
   async doInfinite(infiniteScroll) {
