@@ -25,7 +25,8 @@
 
         <ion-col (click)="addToCart(drug)" size="2">
           <ion-icon *ngIf="!isAdded(drug)" class="add-remove-icon" name="add-circle-outline"></ion-icon>
-          <ion-icon *ngIf="isAdded(drug)" class="add-remove-icon" name="remove-circle-outline"></ion-icon>
+          <ion-icon *ngIf="isAdded(drug)" style="color: red;" class="add-remove-icon" name="remove-circle-outline">
+          </ion-icon>
         </ion-col>
       </ion-row>
     </ion-item>
