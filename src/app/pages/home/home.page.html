@@ -6,6 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- client -->
 <ion-content *ngIf="user && user.isClient" [fullscreen]="true">
   <ion-card (click)="navigateToRestaurants()" class="restaurant-card" style="background:url('assets/restaurant.jpg')">
     Restaurants
@@ -26,6 +27,51 @@
   <ion-card (click)="navigateToCurrier()" class="restaurant-card" style="background:url('assets/currier.jpg')">
     Currier
   </ion-card>
+</ion-content>
+
+<!-- worker -->
+<ion-content *ngIf="user && !user.isClient" [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list *ngIf="orderList">
+    <ion-card *ngFor="let order of orderList">
+      <ion-grid>
+        <ion-row style="width: 100%; padding: 2px;">
+          <ion-col style="font-weight: bold; font-size: 18px;">
+            {{order.location}}
+          </ion-col>
+
+          <ion-col style="color: #3880ff; text-align: right;">
+            {{order.deliveryTime}}
+          </ion-col>
+        </ion-row>
+
+        <ion-row style="width: 100%; padding: 2px;">
+          <ion-col style="padding-left: 0px;" size="9">
+            <div class="orderList">{{order.orderList}}</div>
+          </ion-col>
+
+          <ion-col style="padding-left: 0px;" size="3">
+            <div style="float: right; color: gray;font-size: 14px;">{{order.totalCost.toFixed(2)}} KM</div>
+          </ion-col>
+        </ion-row>
+
+        <ion-row style="text-align: center; padding: 2px;">
+          <ion-col style="font-size: 12px;">
+            Tap here for more information
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ion-list>
+
+  <div *ngIf="infScrEnabled && !user.isClient">
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
 </ion-content>
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed">

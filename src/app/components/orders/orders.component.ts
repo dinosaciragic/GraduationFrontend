@@ -26,11 +26,9 @@ export class OrdersComponent implements OnInit {
       let names = "";
       for (let j = 0; j < this.userOrders[i].items.length; j++) {
         names = names.concat(this.userOrders[i].items[j].name.concat(', '));
-        console.log('names', names)
       }
       let index = names.lastIndexOf(', ');
-      this.userOrders[i].orderList = names.slice(0, index);
-      console.log('orderList', this.userOrders[i].orderList)
+      this.userOrders[i].orderList = names.slice(0, index); // order list is variable for the list of items ordered
     }
 
   }

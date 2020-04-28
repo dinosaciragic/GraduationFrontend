@@ -9,7 +9,8 @@ export class Order {
     isStarted: boolean;
     workerId: string;
     userId: string;
-
+    notes: string;
+    //not db variables
     orderList: string;
 
     constructor() {

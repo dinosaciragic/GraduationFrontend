@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Constants } from 'src/app/shared/constants';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Order } from 'src/app/models/Order';
 import { map } from 'rxjs/operators';
 import { AuthenticationService } from '../authentication.service';
@@ -46,5 +46,24 @@ export class OrdersService {
     });
     let addOrder: Order[] = await addOrderPromise;
     return addOrder;
+  }
+
+  async getWorkerOrders(page: number): Promise<Order[]> {
+    let ordersPromise = new Promise<Order[]>((resolve, reject) => {
+      const params = new HttpParams()
+        .set('page', page.toString());
+
+      this.http.post<any>(this.url + '/workerOrders', { params })
+        .pipe(map(res => res as Order[] || []))
+        .subscribe((OrdersPaged) => {
+          resolve(OrdersPaged);
+        }, (error) => {
+          console.log("HTTP ERROR - CollectionService: getOrdersPaged()", error);
+          reject("HTTP error");
+        });
+    });
+  
+    let ordersPaged: Order[] = await ordersPromise;
+    return ordersPaged;
   }
 }
