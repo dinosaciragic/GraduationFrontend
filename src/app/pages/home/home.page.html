@@ -36,7 +36,7 @@
   </ion-refresher>
 
   <ion-list *ngIf="orderList">
-    <ion-card *ngFor="let order of orderList">
+    <ion-card *ngFor="let order of orderList" (click)="openSingleOrderModal(order)">
       <ion-grid>
         <ion-row style="width: 100%; padding: 2px;">
           <ion-col style="font-weight: bold; font-size: 18px;">

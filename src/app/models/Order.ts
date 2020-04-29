@@ -1,5 +1,5 @@
 export class Order {
-
+    _id: string;
     items: any[];
     location: string;
     deliveryTime: string;

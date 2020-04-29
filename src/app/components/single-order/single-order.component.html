@@ -1,0 +1,139 @@
+<ion-header>
+
+  <ion-toolbar>
+    <ion-title>Order</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content>
+  <!-- ordered items start -->
+  <ion-list-header>
+    <ion-label class="label">Order Items</ion-label>
+  </ion-list-header>
+
+  <ion-list *ngIf="order && order.items">
+    <ion-item *ngFor="let item of order.items">
+      <ion-row style="width: 100%;">
+        <ion-col size="9">
+          {{item.name}}
+        </ion-col>
+
+        <ion-col class="price" size="3">
+          {{item.price.toFixed(2)}} KM
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+  <!-- order items end -->
+
+  <!-- delivery details start -->
+  <ion-list-header>
+    <ion-label class="label">Delivery details</ion-label>
+  </ion-list-header>
+
+  <ion-list *ngIf="order">
+    <!-- order location -->
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 2px;" name="location-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          {{order.location}}
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <!-- delivery time -->
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 8px;" name="time-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col style="margin-top: 6px;" size="11">
+          <ion-label>{{order.deliveryTime}}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <!-- contact phone -->
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 12px;" name="call-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col style="margin-top: 8px;" size="11">
+          <ion-label>{{order.contactPhone}}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <!-- payment method -->
+    <ion-item>
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon style="margin-top: 2px;" name="cash-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          Pay with cash on delivery
+        </ion-col>
+      </ion-row>
+    </ion-item>
+
+    <!-- order notes -->
+    <ion-item *ngIf="order.notes">
+      <ion-row style="width: 100%;">
+        <ion-col size="1">
+          <ion-icon name="clipboard-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="11">
+          Pay with cash on delivery
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<!-- delivery details end -->
+
+<ion-footer style="height: 20vh;">
+  <!-- order cost -->
+  <ion-row *ngIf="order && order.itemsCost">
+    <ion-col size="6">
+      Order
+    </ion-col>
+
+    <ion-col size="6">
+      <div style="float: right;">{{order.itemsCost.toFixed(2)}}</div>
+    </ion-col>
+  </ion-row>
+
+  <!-- total cost -->
+  <ion-row *ngIf="order && order.totalCost">
+    <ion-col size="6">
+      Total
+    </ion-col>
+
+    <ion-col size="6">
+      <div style="float: right;">{{order.totalCost.toFixed(2)}}</div>
+    </ion-col>
+  </ion-row>
+
+  <!-- confirm button -->
+  <ion-row>
+    <ion-button class="button-center" expand="block" (click)="confirmOrder()">Confirm order</ion-button>
+  </ion-row>
+
+</ion-footer>

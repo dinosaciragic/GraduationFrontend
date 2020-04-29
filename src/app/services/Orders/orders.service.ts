@@ -50,10 +50,7 @@ export class OrdersService {
 
   async getWorkerOrders(page: number): Promise<Order[]> {
     let ordersPromise = new Promise<Order[]>((resolve, reject) => {
-      const params = new HttpParams()
-        .set('page', page.toString());
-
-      this.http.post<any>(this.url + '/workerOrders', { params })
+      this.http.post<any>(this.url + '/workerOrders/' + page, {})
         .pipe(map(res => res as Order[] || []))
         .subscribe((OrdersPaged) => {
           resolve(OrdersPaged);
@@ -62,8 +59,35 @@ export class OrdersService {
           reject("HTTP error");
         });
     });
-  
+
     let ordersPaged: Order[] = await ordersPromise;
     return ordersPaged;
+  }
+
+  async getOrderById(id): Promise<Order> {
+    let orderPromise = new Promise<Order>((resolve, reject) => {
+      this.http.get<any>(this.url + '/single/' + id)
+        .pipe(map(res => res as Order))
+        .subscribe((data) => {
+          resolve(data);
+        }, (error) => {
+          reject("HTTP error");
+        });
+    });
+    let orderData: Order = await orderPromise;
+    return orderData;
+  }
+
+  async editOrder(editedOrder: Order): Promise<any> {
+    let groupPromise = new Promise<any>((resolve, reject) => {
+
+      this.http.put(this.url + '/edit/' + editedOrder._id, editedOrder).subscribe((groupMemebers) => {
+        resolve(groupMemebers);
+      }, (error) => {
+        reject("HTTP error");
+      });
+    });
+    let groupMembers: any = await groupPromise;
+    return groupMembers;
   }
 }
