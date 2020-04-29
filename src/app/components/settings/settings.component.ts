@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-settings',
@@ -7,8 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private modalCtrl: ModalController,
+    private authSvc: AuthenticationService
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
+
+  close() {
+    this.modalCtrl.dismiss();
+  }
+
+  logout() {
+    this.authSvc.logout();
+    this.close();
+  }
 
 }

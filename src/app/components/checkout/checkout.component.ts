@@ -1,9 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Drug } from 'src/app/models/Drug';
-import { ModalController, PickerController } from '@ionic/angular';
+import { ModalController, PickerController, AlertController } from '@ionic/angular';
 import { PickerOptions } from "@ionic/core";
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { User } from 'src/app/models/User';
+import { Order } from 'src/app/models/Order';
+import { OrdersService } from 'src/app/services/Orders/orders.service';
 
 @Component({
   selector: 'app-checkout',
@@ -20,12 +22,15 @@ export class CheckoutComponent implements OnInit {
   deliveryCost: number = 5;
   totalCost: number;
   currentUser: User;
-  contctPhone: number;
+  contactPhone: number;
+  newOrder: Order = new Order();
 
   constructor(
     private modalCtrl: ModalController,
     private pickerCtrl: PickerController,
-    private authSvc: AuthenticationService
+    private authSvc: AuthenticationService,
+    private alertCtrl: AlertController,
+    private orderSvc: OrdersService
   ) { }
 
   async ngOnInit() {
@@ -44,7 +49,6 @@ export class CheckoutComponent implements OnInit {
       // for every 10 aboute 20 add 3.5
       let addToDelivery = (Math.floor(this.orderSum / 10) - 2) * 3.5;
       this.deliveryCost += addToDelivery;
-      console.log('delivery', this.deliveryCost)
     }
 
     this.totalCost = this.orderSum + this.deliveryCost;
@@ -81,7 +85,6 @@ export class CheckoutComponent implements OnInit {
           text: 'Ok',
           handler: (value: any) => {
             this.deliveryTime = value.Times.value
-            console.log(this.deliveryTime, value.Times.value);
           }
         }
       ],
@@ -103,18 +106,49 @@ export class CheckoutComponent implements OnInit {
     return options;
   }
 
-  confirmOrder() {
-    let data = {
-      items: this.addedDrugs,
-      location: this.currentUser.location,
-      userId: this.currentUser._id,
-      deliveryTime: this.deliveryTime,
-      contctPhone: this.contctPhone,
-      itemsCost: this.orderSum,
-      totalCost: this.totalCost,
-      isStarted: false
+  async confirmOrder() {
+    if (this.validate()) {
+      this.newOrder.items = this.addedDrugs;
+      this.newOrder.location = this.currentUser.location;
+      this.newOrder.userId = this.currentUser._id;
+      this.newOrder.deliveryTime = this.deliveryTime;
+      this.newOrder.contactPhone = this.contactPhone;
+      this.newOrder.itemsCost = this.orderSum;
+      this.newOrder.totalCost = this.totalCost;
+      this.newOrder.isStarted = false;
+
+      await this.orderSvc.addOrder(this.newOrder);
+      this.addedDrugs = [];
+      this.close();
     }
-    console.log('confirmed', data)
+  }
+
+  public async showAlert(text: string) {
+    let alert = await this.alertCtrl.create({
+      header: "Can not place order",
+      message: text,
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'cancel',
+          handler: () => {
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  validate(): boolean {
+    if (!this.deliveryTime) {
+      this.showAlert("Please choose delivery time.");
+      return false;
+    } else if (!this.contactPhone) {
+      this.showAlert("Please add contact phone.");
+      return false;
+    } else {
+      return true;
+    }
   }
 
 }

@@ -16,6 +16,7 @@ export class PharmacyPage implements OnInit {
   infScrEnabled: boolean = true;
   count: number = 0;
   orderSum: number = 0;
+  
   private pageSize: number = 12;
   private addedDrugs: Drug[] = [];
 

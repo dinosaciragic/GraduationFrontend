@@ -5,24 +5,24 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule) },
   {
     path: 'restaurants',
-    loadChildren: () => import('./restaurants/restaurants.module').then( m => m.RestaurantsPageModule)
+    loadChildren: () => import('./restaurants/restaurants.module').then(m => m.RestaurantsPageModule)
   },
   {
     path: 'groceries',
-    loadChildren: () => import('./groceries/groceries.module').then( m => m.GroceriesPageModule)
+    loadChildren: () => import('./groceries/groceries.module').then(m => m.GroceriesPageModule)
   },
   {
     path: 'shops',
-    loadChildren: () => import('./shops/shops.module').then( m => m.ShopsPageModule)
+    loadChildren: () => import('./shops/shops.module').then(m => m.ShopsPageModule)
   },
   {
     path: 'currier',
-    loadChildren: () => import('./currier/currier.module').then( m => m.CurrierPageModule)
+    loadChildren: () => import('./currier/currier.module').then(m => m.CurrierPageModule)
   },
   {
     path: 'pharmacy',
-    loadChildren: () => import('./pharmacy/pharmacy.module').then( m => m.PharmacyPageModule)
-  },
+    loadChildren: () => import('./pharmacy/pharmacy.module').then(m => m.PharmacyPageModule)
+  }
 ];
 
 @NgModule({

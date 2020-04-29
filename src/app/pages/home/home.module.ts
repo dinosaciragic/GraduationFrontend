@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { HomePage } from './home.page';
 import { OrdersComponent } from 'src/app/components/orders/orders.component';
 import { SettingsComponent } from 'src/app/components/settings/settings.component';
+import { SingleOrderComponent } from 'src/app/components/single-order/single-order.component';
 
 @NgModule({
   imports: [
@@ -22,12 +23,14 @@ import { SettingsComponent } from 'src/app/components/settings/settings.componen
   ],
   entryComponents: [
     OrdersComponent,
-    SettingsComponent
+    SettingsComponent,
+    SingleOrderComponent
   ],
   declarations: [
     HomePage,
     OrdersComponent,
-    SettingsComponent
+    SettingsComponent,
+    SingleOrderComponent
   ]
 })
 export class HomePageModule { }
