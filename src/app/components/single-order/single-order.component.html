@@ -132,8 +132,12 @@
   </ion-row>
 
   <!-- confirm button -->
-  <ion-row>
+  <ion-row *ngIf="order && !order.isStarted && jwt && !jwt.isClient">
     <ion-button class="button-center" expand="block" (click)="confirmOrder()">Confirm order</ion-button>
+  </ion-row>
+
+  <ion-row *ngIf="order && order.isStarted && jwt && jwt.isClient">
+    <ion-button class="button-center" expand="block" (click)="confirmDelivery()">Confirm delivery</ion-button>
   </ion-row>
 
 </ion-footer>

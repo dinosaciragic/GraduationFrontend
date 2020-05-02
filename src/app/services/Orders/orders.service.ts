@@ -48,7 +48,8 @@ export class OrdersService {
     return addOrder;
   }
 
-  async getWorkerOrders(page: number): Promise<Order[]> {
+  // get worker orders listed in home page/ dashboard
+  async getWorkerOrdersForDash(page: number): Promise<Order[]> {
     let ordersPromise = new Promise<Order[]>((resolve, reject) => {
       this.http.post<any>(this.url + '/workerOrders/' + page, {})
         .pipe(map(res => res as Order[] || []))
@@ -62,6 +63,23 @@ export class OrdersService {
 
     let ordersPaged: Order[] = await ordersPromise;
     return ordersPaged;
+  }
+
+  // get worker orders listed in home page/ dashboard
+  async getWorkerOrdersForWorker(id: number): Promise<Order[]> {
+    let ordersPromise = new Promise<Order[]>((resolve, reject) => {
+      this.http.get<any>(this.url + '/workerOrders/' + id, {})
+        .pipe(map(res => res as Order[] || []))
+        .subscribe((OrdersPaged) => {
+          resolve(OrdersPaged);
+        }, (error) => {
+          console.log("HTTP ERROR - CollectionService: getOrdersPaged()", error);
+          reject("HTTP error");
+        });
+    });
+
+    let workerOrders: Order[] = await ordersPromise;
+    return workerOrders;
   }
 
   async getOrderById(id): Promise<Order> {
@@ -79,15 +97,27 @@ export class OrdersService {
   }
 
   async editOrder(editedOrder: Order): Promise<any> {
-    let groupPromise = new Promise<any>((resolve, reject) => {
+    let editPromise = new Promise<any>((resolve, reject) => {
 
-      this.http.put(this.url + '/edit/' + editedOrder._id, editedOrder).subscribe((groupMemebers) => {
-        resolve(groupMemebers);
+      this.http.put(this.url + '/edit/' + editedOrder._id, editedOrder).subscribe((data) => {
+        resolve(data);
       }, (error) => {
         reject("HTTP error");
       });
     });
-    let groupMembers: any = await groupPromise;
-    return groupMembers;
+    let doneEdit: any = await editPromise;
+    return doneEdit;
+  }
+
+  async deleteOrder(id): Promise<any> {
+    let deletePromise = new Promise<any>((resolve, reject) => {
+      this.http.delete(this.url + '/delete/' + id).subscribe((data) => {
+        resolve(data);
+      }, (error) => {
+        reject("HTTP error");
+      });
+    });
+    let deletedOrder: any = await deletePromise;
+    return deletedOrder;
   }
 }

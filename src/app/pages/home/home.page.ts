@@ -38,7 +38,7 @@ export class HomePage implements OnInit {
     console.log('decoded token', this.user)
     if (!this.user.isClient) {
       // get order list for worker
-      this.orderList = await this.ordersSvc.getWorkerOrders(1);
+      this.orderList = await this.ordersSvc.getWorkerOrdersForDash(1);
 
       // disable infinite scrool if not enought results
       if (this.orderList.length < this.pageSize) {
@@ -133,7 +133,7 @@ export class HomePage implements OnInit {
 
     try {
       // get next page orders
-      let data = await this.ordersSvc.getWorkerOrders(this.orderList.length / this.pageSize + 1);
+      let data = await this.ordersSvc.getWorkerOrdersForDash(this.orderList.length / this.pageSize + 1);
 
       // disable infinite scrool if not enought results
       if (data.length < this.pageSize) {
