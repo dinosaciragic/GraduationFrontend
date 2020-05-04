@@ -17,18 +17,18 @@
     <ion-label class="label">Order Items</ion-label>
   </ion-list-header>
 
-  <ion-list *ngIf="addedDrugs">
-    <ion-item *ngFor="let drug of addedDrugs">
+  <ion-list *ngIf="addedItems">
+    <ion-item *ngFor="let item of addedItems">
       <ion-row style="width: 100%;">
         <ion-col size="7">
-          {{drug.name}}
+          {{item.name}}
         </ion-col>
 
         <ion-col class="price" size="3">
-          {{drug.price.toFixed(2)}} KM
+          {{item.price.toFixed(2)}} KM
         </ion-col>
 
-        <ion-col (click)="removeFromCart(drug)" size="2">
+        <ion-col (click)="removeFromCart(item)" size="2">
           <ion-icon class="add-remove-icon" style="color: red;" name="remove-circle-outline"></ion-icon>
         </ion-col>
       </ion-row>

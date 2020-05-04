@@ -14,7 +14,7 @@
 
 <ion-content>
   <ion-list *ngIf="userOrders">
-    <ion-item *ngFor="let order of userOrders">
+    <ion-item *ngFor="let order of userOrders" (click)="openSingleOrderModal(order)">
       <ion-grid>
         <ion-row style="width: 100%;">
           <ion-col>
