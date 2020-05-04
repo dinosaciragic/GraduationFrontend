@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { PharmacyPage } from './pharmacy.page';
 import { RouterModule } from '@angular/router';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
+import { CheckoutSharedModule } from 'src/app/shared/checkout-shared.module';
 
 @NgModule({
   imports: [
@@ -18,14 +19,14 @@ import { CheckoutComponent } from 'src/app/components/checkout/checkout.componen
         path: '',
         component: PharmacyPage
       }
-    ])
+    ]),
+    CheckoutSharedModule
   ],
   entryComponents: [
-    CheckoutComponent
+    
   ],
   declarations: [
-    PharmacyPage,
-    CheckoutComponent
+    PharmacyPage
   ]
 })
 export class PharmacyPageModule { }

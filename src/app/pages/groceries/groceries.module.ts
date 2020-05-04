@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { GroceriesPage } from './groceries.page';
 import { RouterModule } from '@angular/router';
+import { CheckoutSharedModule } from 'src/app/shared/checkout-shared.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { RouterModule } from '@angular/router';
         path: '',
         component: GroceriesPage
       }
-    ])
+    ]),
+    CheckoutSharedModule
   ],
   declarations: [GroceriesPage]
 })

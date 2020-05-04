@@ -14,7 +14,7 @@ import { OrdersService } from 'src/app/services/Orders/orders.service';
 })
 export class CheckoutComponent implements OnInit {
 
-  @Input() addedDrugs: Drug[];
+  @Input() addedItems: any[];
   @Input() orderSum: number;
 
   deliveryTime: string;
@@ -55,7 +55,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   close() {
-    this.modalCtrl.dismiss(this.addedDrugs);
+    this.modalCtrl.dismiss(this.addedItems);
   }
 
   removeFromCart(drug: Drug) {
@@ -65,9 +65,9 @@ export class CheckoutComponent implements OnInit {
       this.close();
     }
 
-    for (let i = 0; i < this.addedDrugs.length; i++) {
-      if (this.addedDrugs[i]._id == drug._id) {
-        this.addedDrugs.splice(i, 1);
+    for (let i = 0; i < this.addedItems.length; i++) {
+      if (this.addedItems[i]._id == drug._id) {
+        this.addedItems.splice(i, 1);
       }
     }
 
@@ -108,7 +108,7 @@ export class CheckoutComponent implements OnInit {
 
   async confirmOrder() {
     if (this.validate()) {
-      this.newOrder.items = this.addedDrugs;
+      this.newOrder.items = this.addedItems;
       this.newOrder.location = this.currentUser.location;
       this.newOrder.userId = this.currentUser._id;
       this.newOrder.deliveryTime = this.deliveryTime;
@@ -118,7 +118,7 @@ export class CheckoutComponent implements OnInit {
       this.newOrder.isStarted = false;
 
       await this.orderSvc.addOrder(this.newOrder);
-      this.addedDrugs = [];
+      this.addedItems = [];
       this.close();
     }
   }

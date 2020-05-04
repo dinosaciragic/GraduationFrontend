@@ -99,7 +99,7 @@ export class PharmacyPage implements OnInit {
       {
         component: CheckoutComponent,
         componentProps: {
-          addedDrugs: this.addedDrugs,
+          addedItems: this.addedDrugs,
           orderSum: this.orderSum
         }
       }

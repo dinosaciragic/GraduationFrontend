@@ -8,6 +8,72 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
 
+<ion-content>
+  <ion-row>
+    <ion-col size="11">
+      <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="refresh(false)" (ionCancel)="resetSearch()"
+        placeholder="Search"></ion-searchbar>
+    </ion-col>
+
+    <ion-col size="1" style="margin-left: -10px;" (click)="openCloseFilter()">
+      <ion-icon style="font-size: 24px; margin-top: 17px;" name="options-outline"></ion-icon>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="filterOpen">
+    <!-- open / close filter options -->
+    <ion-item style="width: 100%; margin-bottom: 10px;">
+      <ion-label>Category</ion-label>
+      <ion-select cancelText="Cancel" okText="Ok" (ionChange)="setCategory()" [(ngModel)]="category">
+        <ion-select-option [value]="">None</ion-select-option>
+        <ion-select-option *ngFor="let category of categories" [value]="category">{{category}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="subCategoryOpen" style="width: 100%; margin-bottom: 10px;">
+      <ion-label>Sub Category</ion-label>
+      <ion-select cancelText="Cancel" okText="Ok" (ionChange)="setCategory()" [(ngModel)]="subCategory">
+        <ion-select-option *ngFor="let category of subCategories" [value]="category">{{category}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-row>
+
+  <ion-list *ngIf="groceries">
+    <ion-item *ngFor="let grocerie of groceries">
+      <ion-row style="width: 100%;">
+        <ion-col size="7">
+          {{grocerie.name}}
+        </ion-col>
+
+        <ion-col class="price" size="3">
+          {{grocerie.price.toFixed(2)}} KM
+        </ion-col>
+
+        <ion-col (click)="addToCart(grocerie)" size="2">
+          <ion-icon *ngIf="!isAdded(grocerie)" class="add-remove-icon" name="add-circle-outline"></ion-icon>
+          <ion-icon *ngIf="isAdded(grocerie)" style="color: red;" class="add-remove-icon" name="remove-circle-outline">
+          </ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="infScrEnabled">
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
 </ion-content>
+
+<ion-footer *ngIf="count > 0" class="footer">
+  Order {{count}} for {{orderSum.toFixed(2)}} KM
+</ion-footer>
+
+<ion-fab *ngIf="count > 0" vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="startCheckout()" size="small">
+    <ion-icon name="arrow-forward-circle-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
