@@ -8,6 +8,7 @@ import { HomePage } from './home.page';
 import { OrdersComponent } from 'src/app/components/orders/orders.component';
 import { SettingsComponent } from 'src/app/components/settings/settings.component';
 import { SingleOrderComponent } from 'src/app/components/single-order/single-order.component';
+import { CheckoutSharedModule } from 'src/app/shared/checkout-shared.module';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { SingleOrderComponent } from 'src/app/components/single-order/single-ord
         path: '',
         component: HomePage
       }
-    ])
+    ]),
+    CheckoutSharedModule
   ],
   entryComponents: [
     OrdersComponent,

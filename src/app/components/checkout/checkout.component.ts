@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { User } from 'src/app/models/User';
 import { Order } from 'src/app/models/Order';
 import { OrdersService } from 'src/app/services/Orders/orders.service';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-checkout',
@@ -14,9 +15,8 @@ import { OrdersService } from 'src/app/services/Orders/orders.service';
 })
 export class CheckoutComponent implements OnInit {
 
-  @Input() addedItems: any[];
-  @Input() orderSum: number;
-
+  addedItems: any[] = [];
+  orderSum: number = 0;
   deliveryTime: string;
   times: string[] = ["ASAP", "45m", "1h", "2h", "3h", "4h", "5h", "6h", "7h", "8h"];
   deliveryCost: number = 5;
@@ -24,13 +24,15 @@ export class CheckoutComponent implements OnInit {
   currentUser: User;
   contactPhone: number;
   newOrder: Order = new Order();
+  quantity: number = 1;
 
   constructor(
     private modalCtrl: ModalController,
     private pickerCtrl: PickerController,
     private authSvc: AuthenticationService,
     private alertCtrl: AlertController,
-    private orderSvc: OrdersService
+    private orderSvc: OrdersService,
+    private storage: NativeStorage
   ) { }
 
   async ngOnInit() {
@@ -39,7 +41,23 @@ export class CheckoutComponent implements OnInit {
     this.refresh();
   }
 
-  refresh() {
+  async refresh() {
+    let drugsData = await this.storage.getItem("addedDrugs");
+
+    if (drugsData) {
+      if (this.addedItems.length > 0) {
+        this.addedItems = this.addedItems.concat(drugsData);
+      } else {
+        this.addedItems = drugsData;
+      }
+    }
+
+    if (this.addedItems.length > 0) {
+      for (let i = 0; i < this.addedItems.length; i++) {
+        this.orderSum += this.addedItems[i].price;
+      }
+    }
+
     this.deliveryCost = 5;
     this.totalCost = 0;
 
@@ -52,10 +70,14 @@ export class CheckoutComponent implements OnInit {
     }
 
     this.totalCost = this.orderSum + this.deliveryCost;
+
+    this.addedItems.forEach(item => {
+      item.quantity = 1;
+    });
   }
 
   close() {
-    this.modalCtrl.dismiss(this.addedItems);
+    this.modalCtrl.dismiss(true);
   }
 
   removeFromCart(drug: Drug) {
@@ -71,7 +93,58 @@ export class CheckoutComponent implements OnInit {
       }
     }
 
-    this.refresh();
+    // Add items to local storage to use later in cart
+    this.storage.setItem("addedDrugs", this.addedItems);
+
+    this.orderSum = 0;
+
+    if (this.addedItems.length > 0) {
+      for (let i = 0; i < this.addedItems.length; i++) {
+        this.orderSum += this.addedItems[i].price;
+      }
+    }
+
+    this.deliveryCost = 5;
+    this.totalCost = 0;
+
+    if (this.orderSum <= 20) {
+      this.deliveryCost = 5;
+    } else {
+      // for every 10 aboute 20 add 3.5
+      let addToDelivery = (Math.floor(this.orderSum / 10) - 2) * 3.5;
+      this.deliveryCost += addToDelivery;
+    }
+
+    this.totalCost = this.orderSum + this.deliveryCost;
+  }
+
+  quantityChanged() {
+    this.orderSum = 0;
+
+    if (this.addedItems.length > 0) {
+      for (let i = 0; i < this.addedItems.length; i++) {
+        if (this.addedItems[i].quantity > 1) {
+          for (let j = 0; j < this.addedItems[i].quantity; j++) {
+            this.orderSum += this.addedItems[i].price;
+          }
+        } else {
+          this.orderSum += this.addedItems[i].price;
+        }
+      }
+    }
+
+    this.deliveryCost = 5;
+    this.totalCost = 0;
+
+    if (this.orderSum <= 20) {
+      this.deliveryCost = 5;
+    } else {
+      // for every 10 aboute 20 add 3.5
+      let addToDelivery = (Math.floor(this.orderSum / 10) - 2) * 3.5;
+      this.deliveryCost += addToDelivery;
+    }
+
+    this.totalCost = this.orderSum + this.deliveryCost;
   }
 
   async showPicker() {
@@ -119,6 +192,7 @@ export class CheckoutComponent implements OnInit {
 
       await this.orderSvc.addOrder(this.newOrder);
       this.addedItems = [];
+      this.storage.remove("addedDrugs");
       this.close();
     }
   }
@@ -146,9 +220,22 @@ export class CheckoutComponent implements OnInit {
     } else if (!this.contactPhone) {
       this.showAlert("Please add contact phone.");
       return false;
+    } else if (!this.checkQuantifiy()) {
+      this.showAlert("You have to have a quantity of at least 1 for each item.");
+      return false;
     } else {
       return true;
     }
+  }
+
+  checkQuantifiy(): boolean {
+    for (let i = 0; i < this.addedItems.length; i++) {
+      if (this.addedItems[i].quantity < 1) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }

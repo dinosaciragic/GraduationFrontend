@@ -3,6 +3,7 @@ import { DrugsService } from 'src/app/services/drugs/drugs.service';
 import { Drug } from 'src/app/models/Drug';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-pharmacy',
@@ -16,14 +17,15 @@ export class PharmacyPage implements OnInit {
   infScrEnabled: boolean = true;
   count: number = 0;
   orderSum: number = 0;
-  
+
   private pageSize: number = 12;
-  private addedDrugs: Drug[] = [];
+  private addedItems: Drug[] = [];
 
   constructor(
     private drugsSvc: DrugsService,
     private loadingCtrl: LoadingController,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private storage: NativeStorage
   ) { }
 
   ngOnInit() {
@@ -31,6 +33,7 @@ export class PharmacyPage implements OnInit {
   }
 
   async refresh(loader: boolean) {
+    console.log('in referes')
     try {
       if (loader) {
         let loader = await this.loadingCtrl.create({
@@ -38,8 +41,24 @@ export class PharmacyPage implements OnInit {
         });
         await loader.present();
       }
-
+      //get drugs from backend
       this.drugs = await this.drugsSvc.getDrugsPaged(1, this.searchTerm);
+      // gett items that are in cart
+      let data = await this.storage.getItem("addedDrugs");
+      // set count and price for display
+      if (data) {
+        this.addedItems = [];
+        this.addedItems = data;
+        this.count = 0;
+        this.orderSum = 0;
+
+        if (this.addedItems.length > 0) {
+          for (let i = 0; i < this.addedItems.length; i++) {
+            this.count++;
+            this.orderSum += this.addedItems[i].price;
+          }
+        }
+      }
 
       if (loader) {
         this.loadingCtrl.dismiss();
@@ -66,24 +85,26 @@ export class PharmacyPage implements OnInit {
     if (!this.isAdded(drug)) {
       this.count++;
       this.orderSum += drug.price;
-      this.addedDrugs.push(drug);
+      this.addedItems.push(drug);
     } else {
       this.count--;
       this.orderSum -= drug.price;
 
-      for (let i = 0; i < this.addedDrugs.length; i++) {
-        if (this.addedDrugs[i]._id == drug._id) {
-          this.addedDrugs.splice(i, 1);
+      for (let i = 0; i < this.addedItems.length; i++) {
+        if (this.addedItems[i]._id == drug._id) {
+          this.addedItems.splice(i, 1);
         }
       }
     }
+    // Add items to local storage to use later in cart
+    this.storage.setItem("addedDrugs", this.addedItems);
   }
 
   // this is because of add/remove icon
   isAdded(drug: Drug): boolean {
-    if (this.addedDrugs.length > 0) {
-      for (let i = 0; i < this.addedDrugs.length; i++) {
-        if (this.addedDrugs[i]._id == drug._id) {
+    if (this.addedItems.length > 0) {
+      for (let i = 0; i < this.addedItems.length; i++) {
+        if (this.addedItems[i]._id == drug._id) {
           return true;
         }
       }
@@ -95,30 +116,20 @@ export class PharmacyPage implements OnInit {
   }
 
   async startCheckout() {
-    let modal = await this.modalCtrl.create(
-      {
-        component: CheckoutComponent,
-        componentProps: {
-          addedItems: this.addedDrugs,
-          orderSum: this.orderSum
+    let drugsData = await this.storage.getItem("addedDrugs");
+
+    if (drugsData && drugsData.length > 0) {
+      let modal = await this.modalCtrl.create(
+        {
+          component: CheckoutComponent
         }
-      }
-    );
-    await modal.present();
+      );
+      await modal.present();
 
-    let modalData = await modal.onDidDismiss();
+      let res = await modal.onDidDismiss();
 
-    if (modalData) {
-      this.addedDrugs = [];
-      this.addedDrugs = modalData.data;
-      this.count = 0;
-      this.orderSum = 0;
-
-      if (this.addedDrugs.length > 0) {
-        for (let i = 0; i < this.addedDrugs.length; i++) {
-          this.count++;
-          this.orderSum += this.addedDrugs[i].price;
-        }
+      if (res) {
+        this.refresh(false);
       }
     }
   }

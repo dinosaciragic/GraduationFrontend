@@ -20,15 +20,19 @@
   <ion-list *ngIf="addedItems">
     <ion-item *ngFor="let item of addedItems">
       <ion-row style="width: 100%;">
-        <ion-col size="7">
+        <ion-col style="margin-top: 10px;" size="5">
           {{item.name}}
         </ion-col>
 
-        <ion-col class="price" size="3">
+        <ion-col style="text-align: center;" size="2">
+          <ion-input type="number" [(ngModel)]="item.quantity" (ionChange)="quantityChanged()"></ion-input>
+        </ion-col>
+
+        <ion-col class="price" style="margin-top: 10px;" size="3">
           {{item.price.toFixed(2)}} KM
         </ion-col>
 
-        <ion-col (click)="removeFromCart(item)" size="2">
+        <ion-col (click)="removeFromCart(item)" style="margin-top: 10px;" size="2">
           <ion-icon class="add-remove-icon" style="color: red;" name="remove-circle-outline"></ion-icon>
         </ion-col>
       </ion-row>
@@ -91,7 +95,8 @@
     </ion-item>
 
     <ion-item>
-      <ion-textarea [(ngModel)]="newOrder.notes" rows="6" placeholder="Enter additional information if needed here..."></ion-textarea>
+      <ion-textarea [(ngModel)]="newOrder.notes" rows="6" placeholder="Enter additional information if needed here...">
+      </ion-textarea>
     </ion-item>
   </ion-list>
 </ion-content>
