@@ -24,9 +24,9 @@
     Pharmacy
   </ion-card>
 
- <!--  <ion-card (click)="navigateToCurrier()" class="restaurant-card" style="background:url('assets/currier.jpg')">
-    Currier
-  </ion-card> -->
+  <ion-card (click)="startOrdersModal()" class="restaurant-card" style="background:url('assets/currier.jpg')">
+    My Orders
+  </ion-card>
 </ion-content>
 
 <!-- worker -->
@@ -74,8 +74,13 @@
   </div>
 </ion-content>
 
+<ion-footer *ngIf="count > 0" class="footer">
+  Order {{count}} for {{orderSum.toFixed(2)}} KM
+</ion-footer>
+
+
 <ion-fab vertical="bottom" horizontal="start" slot="fixed">
-  <ion-fab-button (click)="startOrdersModal()" size="small">
+  <ion-fab-button (click)="startCheckout()" size="small">
     <ion-icon name="cart-outline"></ion-icon>
   </ion-fab-button>
 </ion-fab>

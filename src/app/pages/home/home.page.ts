@@ -3,10 +3,12 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ModalController } from '@ionic/angular';
 import { OrdersComponent } from 'src/app/components/orders/orders.component';
 import { SettingsComponent } from 'src/app/components/settings/settings.component';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, Event } from '@angular/router';
 import { OrdersService } from 'src/app/services/Orders/orders.service';
 import { Order } from 'src/app/models/Order';
 import { SingleOrderComponent } from 'src/app/components/single-order/single-order.component';
+import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-home',
@@ -18,15 +20,20 @@ export class HomePage implements OnInit {
   user: any;
   orderList: Order[] = [];
   infScrEnabled: boolean = true;
+  hasOrders: boolean = false;
+  count: number = 0;
+  orderSum: number = 0;
 
   private pageSize: number = 12;
+  private addedItems: any[] = [];
 
   constructor(
     private authService: AuthenticationService,
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
     private router: Router,
-    private ordersSvc: OrdersService
+    private ordersSvc: OrdersService,
+    private storage: NativeStorage
   ) { }
 
   ngOnInit() {
@@ -56,6 +63,22 @@ export class HomePage implements OnInit {
         }
         let index = names.lastIndexOf(', ');
         this.orderList[i].orderList = names.slice(0, index); // order list is variable for the list of items ordered
+      }
+    } else {
+      let data = await this.storage.getItem("addedDrugs");
+      // set count and price for display
+      if (data) {
+        this.addedItems = [];
+        this.addedItems = data;
+        this.count = 0;
+        this.orderSum = 0;
+
+        if (this.addedItems.length > 0) {
+          for (let i = 0; i < this.addedItems.length; i++) {
+            this.count++;
+            this.orderSum += this.addedItems[i].price;
+          }
+        }
       }
     }
     // if changes detect and update view
@@ -122,6 +145,29 @@ export class HomePage implements OnInit {
 
     if (modalData.data) {
       this.refresh(); // refresh orders list if confirmed
+    }
+  }
+
+  async startCheckout() {
+    if (this.user.isClient) {
+      let drugsData = await this.storage.getItem("addedDrugs");
+
+      if (drugsData && drugsData.length > 0) {
+        let modal = await this.modalCtrl.create(
+          {
+            component: CheckoutComponent
+          }
+        );
+        await modal.present();
+
+        let res = await modal.onDidDismiss();
+
+        if (res) {
+          this.refresh();
+        }
+      }
+    } else {
+      this.startOrdersModal();
     }
   }
 

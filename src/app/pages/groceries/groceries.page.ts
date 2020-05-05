@@ -3,6 +3,7 @@ import { GroceriesService } from 'src/app/services/groceries/groceries.service';
 import { Grocerie } from 'src/app/models/Groceries';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({
   selector: 'app-groceries',
@@ -51,13 +52,14 @@ export class GroceriesPage implements OnInit {
   subCategoryOpen: boolean = false;
 
   private pageSize: number = 12;
-  private addedGroceries: Grocerie[] = [];
+  private addedItems: Grocerie[] = [];
 
   constructor(
     private groceriesSvc: GroceriesService,
     private loadingCtrl: LoadingController,
     private cdr: ChangeDetectorRef,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private storage: NativeStorage
   ) { }
 
   ngOnInit() {
@@ -74,7 +76,23 @@ export class GroceriesPage implements OnInit {
       }
 
       this.groceries = await this.groceriesSvc.getGroceriesPagedSearchFilter(1, this.searchTerm, this.category, this.subCategory);
-      console.log('groceries', this.groceries)
+      console.log('groceries', this.groceries);
+      // gett items that are in cart
+      let data = await this.storage.getItem("addedDrugs");
+      // set count and price for display
+      if (data) {
+        this.addedItems = [];
+        this.addedItems = data;
+        this.count = 0;
+        this.orderSum = 0;
+
+        if (this.addedItems.length > 0) {
+          for (let i = 0; i < this.addedItems.length; i++) {
+            this.count++;
+            this.orderSum += this.addedItems[i].price;
+          }
+        }
+      }
 
       if (loader) {
         this.loadingCtrl.dismiss();
@@ -147,24 +165,26 @@ export class GroceriesPage implements OnInit {
     if (!this.isAdded(grocerie)) {
       this.count++;
       this.orderSum += grocerie.price;
-      this.addedGroceries.push(grocerie);
+      this.addedItems.push(grocerie);
     } else {
       this.count--;
       this.orderSum -= grocerie.price;
 
-      for (let i = 0; i < this.addedGroceries.length; i++) {
-        if (this.addedGroceries[i]._id == grocerie._id) {
-          this.addedGroceries.splice(i, 1);
+      for (let i = 0; i < this.addedItems.length; i++) {
+        if (this.addedItems[i]._id == grocerie._id) {
+          this.addedItems.splice(i, 1);
         }
       }
     }
+    // Add items to local storage to use later in cart
+    this.storage.setItem("addedDrugs", this.addedItems);
   }
 
   // this is because of add/remove icon
   isAdded(grocerie: Grocerie): boolean {
-    if (this.addedGroceries.length > 0) {
-      for (let i = 0; i < this.addedGroceries.length; i++) {
-        if (this.addedGroceries[i]._id == grocerie._id) {
+    if (this.addedItems.length > 0) {
+      for (let i = 0; i < this.addedItems.length; i++) {
+        if (this.addedItems[i]._id == grocerie._id) {
           return true;
         }
       }
@@ -176,30 +196,20 @@ export class GroceriesPage implements OnInit {
   }
 
   async startCheckout() {
-    let modal = await this.modalCtrl.create(
-      {
-        component: CheckoutComponent,
-        componentProps: {
-          addedItems: this.addedGroceries,
-          orderSum: this.orderSum
+    let drugsData = await this.storage.getItem("addedDrugs");
+
+    if (drugsData && drugsData.length > 0) {
+      let modal = await this.modalCtrl.create(
+        {
+          component: CheckoutComponent
         }
-      }
-    );
-    await modal.present();
+      );
+      await modal.present();
 
-    let modalData = await modal.onDidDismiss();
+      let res = await modal.onDidDismiss();
 
-    if (modalData) {
-      this.addedGroceries = [];
-      this.addedGroceries = modalData.data;
-      this.count = 0;
-      this.orderSum = 0;
-
-      if (this.addedGroceries.length > 0) {
-        for (let i = 0; i < this.addedGroceries.length; i++) {
-          this.count++;
-          this.orderSum += this.addedGroceries[i].price;
-        }
+      if (res) {
+        this.refresh(false);
       }
     }
   }
