@@ -22,6 +22,10 @@ const routes: Routes = [
   {
     path: 'pharmacy',
     loadChildren: () => import('./pharmacy/pharmacy.module').then(m => m.PharmacyPageModule)
+  },
+  {
+    path: 'single-shop',
+    loadChildren: () => import('./single-shop/single-shop.module').then( m => m.SingleShopPageModule)
   }
 ];
 
