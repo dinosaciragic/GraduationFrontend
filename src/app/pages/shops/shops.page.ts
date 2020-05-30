@@ -18,7 +18,7 @@ export class ShopsPage implements OnInit {
   navigateToBook() {
     let navigationExtras: NavigationExtras = {
       state: {
-        shopName: "Book"
+        shopName: "BookShop"
       }
     };
 
@@ -28,7 +28,7 @@ export class ShopsPage implements OnInit {
   navigateToFlower() {
     let navigationExtras: NavigationExtras = {
       state: {
-        shopName: "Flower"
+        shopName: "FlowerShop"
       }
     };
 
@@ -38,7 +38,7 @@ export class ShopsPage implements OnInit {
   navigateToPerfume() {
     let navigationExtras: NavigationExtras = {
       state: {
-        shopName: "Perfume"
+        shopName: "PerfumeShop"
       }
     };
 
@@ -48,7 +48,7 @@ export class ShopsPage implements OnInit {
   navigateToTech() {
     let navigationExtras: NavigationExtras = {
       state: {
-        shopName: "Tech"
+        shopName: "TechShop"
       }
     };
 

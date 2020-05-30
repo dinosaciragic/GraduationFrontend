@@ -4,16 +4,23 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SingleShopPageRoutingModule } from './single-shop-routing.module';
 
 import { SingleShopPage } from './single-shop.page';
+import { RouterModule } from '@angular/router';
+import { CheckoutSharedModule } from 'src/app/shared/checkout-shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SingleShopPageRoutingModule
+    RouterModule.forChild([
+      {
+        path: '',
+        component: SingleShopPage
+      }
+    ]),
+    CheckoutSharedModule
   ],
   declarations: [SingleShopPage]
 })
