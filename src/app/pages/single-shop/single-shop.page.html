@@ -16,7 +16,7 @@
   <ion-list *ngIf="shopItems">
     <ion-item *ngFor="let item of shopItems">
       <ion-row style="width: 100%;">
-        <ion-col style=" text-overflow: ellipsis;  white-space: nowrap;overflow: hidden;" size="7">
+        <ion-col class="three-lines" size="7">
           {{item.name}}
         </ion-col>
 

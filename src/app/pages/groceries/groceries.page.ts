@@ -4,6 +4,7 @@ import { Grocerie } from 'src/app/models/Groceries';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalService } from 'src/app/services/local/local.service';
 
 @Component({
   selector: 'app-groceries',
@@ -59,7 +60,8 @@ export class GroceriesPage implements OnInit {
     private loadingCtrl: LoadingController,
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
-    private storage: NativeStorage
+    private storage: NativeStorage,
+    private localSvc: LocalService
   ) { }
 
   ngOnInit() {
@@ -78,7 +80,7 @@ export class GroceriesPage implements OnInit {
       this.groceries = await this.groceriesSvc.getGroceriesPagedSearchFilter(1, this.searchTerm, this.category, this.subCategory);
       console.log('groceries', this.groceries);
       // gett items that are in cart
-      let data = await this.storage.getItem("addedDrugs");
+      let data = await this.localSvc.getAddedItems();
       // set count and price for display
       if (data) {
         this.addedItems = [];
@@ -196,7 +198,7 @@ export class GroceriesPage implements OnInit {
   }
 
   async startCheckout() {
-    let drugsData = await this.storage.getItem("addedDrugs");
+    let drugsData = await this.localSvc.getAddedItems();
 
     if (drugsData && drugsData.length > 0) {
       let modal = await this.modalCtrl.create(

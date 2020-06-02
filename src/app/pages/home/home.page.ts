@@ -9,6 +9,7 @@ import { Order } from 'src/app/models/Order';
 import { SingleOrderComponent } from 'src/app/components/single-order/single-order.component';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalService } from 'src/app/services/local/local.service';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,8 @@ export class HomePage implements OnInit {
     private modalCtrl: ModalController,
     private router: Router,
     private ordersSvc: OrdersService,
-    private storage: NativeStorage
+    private storage: NativeStorage,
+    private localSvc: LocalService
   ) { }
 
   ngOnInit() {
@@ -65,7 +67,7 @@ export class HomePage implements OnInit {
         this.orderList[i].orderList = names.slice(0, index); // order list is variable for the list of items ordered
       }
     } else {
-      let data = await this.storage.getItem("addedDrugs");
+      let data = await this.localSvc.getAddedItems();
       // set count and price for display
       if (data) {
         this.addedItems = [];
@@ -150,7 +152,7 @@ export class HomePage implements OnInit {
 
   async startCheckout() {
     if (this.user.isClient) {
-      let drugsData = await this.storage.getItem("addedDrugs");
+      let drugsData = await this.localSvc.getAddedItems();
 
       if (drugsData && drugsData.length > 0) {
         let modal = await this.modalCtrl.create(
