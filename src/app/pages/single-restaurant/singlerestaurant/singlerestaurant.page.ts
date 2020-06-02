@@ -1,32 +1,33 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { ShopsService } from 'src/app/services/shops/shops.service';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalService } from 'src/app/services/local/local.service';
+import { RestaurantsService } from 'src/app/services/restaurants/restaurants.service';
+import { RestaurantItem } from 'src/app/models/RestaurantItem';
 import { Shop } from 'src/app/models/Shop';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
-import { LocalService } from 'src/app/services/local/local.service';
 
 @Component({
-  selector: 'app-single-shop',
-  templateUrl: './single-shop.page.html',
-  styleUrls: ['./single-shop.page.scss'],
+  selector: 'app-singlerestaurant',
+  templateUrl: './singlerestaurant.page.html',
+  styleUrls: ['./singlerestaurant.page.scss'],
 })
-export class SingleShopPage implements OnInit {
+export class SinglerestaurantPage implements OnInit {
 
-  shopItems: Shop[] = [];
-  shopName: string;
+  restaurantName: string;
+  restaurantItems: RestaurantItem[] = [];
   searchTerm: string = "";
   infScrEnabled: boolean = true;
   count: number = 0;
   orderSum: number = 0;
 
   private pageSize: number = 12;
-  private addedItems: Shop[] = [];
+  private addedItems: RestaurantItem[] = [];
 
   constructor(
     private router: Router,
-    private shopsSvc: ShopsService,
+    private restaurantsSvc: RestaurantsService,
     private loadingCtrl: LoadingController,
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
@@ -35,8 +36,8 @@ export class SingleShopPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.shopName = this.router.getCurrentNavigation().extras.state.shopName;
-
+    this.restaurantName = this.router.getCurrentNavigation().extras.state.restaurantName;
+    console.log('name', this.restaurantName)
     this.refresh(true);
   }
 
@@ -49,8 +50,8 @@ export class SingleShopPage implements OnInit {
         await loader.present();
       }
 
-      this.shopItems = await this.shopsSvc.getShopsPagedSearchFilter(1, this.searchTerm, this.shopName);
-      console.log('shopItems', this.shopItems);
+      this.restaurantItems = await this.restaurantsSvc.getRestaurantsPagedSearchFilter(1, this.searchTerm, this.restaurantName);
+      console.log('restaurantItems', this.restaurantItems);
       // gett items that are in cart
       let data = await this.localSvc.getAddedItems();
       // set count and price for display
@@ -76,7 +77,7 @@ export class SingleShopPage implements OnInit {
       console.error(error)
     }
 
-    if (this.shopItems.length < this.pageSize) {
+    if (this.restaurantItems.length < this.pageSize) {
       this.infScrEnabled = false;
     }
     else {
@@ -84,16 +85,17 @@ export class SingleShopPage implements OnInit {
     }
   }
 
+
   resetSearch() {
     this.searchTerm = "";
     this.refresh(false);
   }
 
   // this is because of add/remove icon
-  isAdded(shopItem: Shop): boolean {
+  isAdded(restaurantItem: RestaurantItem): boolean {
     if (this.addedItems.length > 0) {
       for (let i = 0; i < this.addedItems.length; i++) {
-        if (this.addedItems[i]._id == shopItem._id) {
+        if (this.addedItems[i]._id == restaurantItem._id) {
           return true;
         }
       }
@@ -104,17 +106,17 @@ export class SingleShopPage implements OnInit {
     }
   }
 
-  addToCart(shopItem: Shop) {
-    if (!this.isAdded(shopItem)) {
+  addToCart(restaurantItem: RestaurantItem) {
+    if (!this.isAdded(restaurantItem)) {
       this.count++;
-      this.orderSum += shopItem.price;
-      this.addedItems.push(shopItem);
+      this.orderSum += restaurantItem.price;
+      this.addedItems.push(restaurantItem);
     } else {
       this.count--;
-      this.orderSum -= shopItem.price;
+      this.orderSum -= restaurantItem.price;
 
       for (let i = 0; i < this.addedItems.length; i++) {
-        if (this.addedItems[i]._id == shopItem._id) {
+        if (this.addedItems[i]._id == restaurantItem._id) {
           this.addedItems.splice(i, 1);
         }
       }
@@ -149,7 +151,7 @@ export class SingleShopPage implements OnInit {
     }
 
     try {
-      let data = await this.shopsSvc.getShopsPagedSearchFilter(this.shopItems.length / this.pageSize + 1, this.searchTerm, this.shopName);
+      let data = await this.restaurantsSvc.getRestaurantsPagedSearchFilter(this.restaurantItems.length / this.pageSize + 1, this.searchTerm, this.restaurantName);
 
       if (data.length < this.pageSize) {
         this.infScrEnabled = false;
@@ -157,7 +159,7 @@ export class SingleShopPage implements OnInit {
         this.infScrEnabled = true;
       }
 
-      this.shopItems = this.shopItems.concat(data);
+      this.restaurantItems = this.restaurantItems.concat(data);
       infiniteScroll.target.complete();
     } catch (error) {
       infiniteScroll.target.complete();

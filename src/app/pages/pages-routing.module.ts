@@ -26,6 +26,10 @@ const routes: Routes = [
   {
     path: 'single-shop',
     loadChildren: () => import('./single-shop/single-shop.module').then( m => m.SingleShopPageModule)
+  },
+  {
+    path: 'singlerestaurant',
+    loadChildren: () => import('./single-restaurant/singlerestaurant/singlerestaurant.module').then( m => m.SinglerestaurantPageModule)
   }
 ];
 
