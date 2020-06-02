@@ -9,5 +9,25 @@
 </ion-header>
 
 <ion-content>
+  <ion-card (click)="navigateToBook()" class="restaurant-card" style="background:url('assets/mcdonalds.jpg')">
+    McDonald's
+  </ion-card>
 
+  <ion-card (click)="navigateToFlower()" class="restaurant-card" style="background:url('assets/montana.jpg')">
+    Montana
+  </ion-card>
+
+  <ion-card (click)="navigateToPerfume()" class="restaurant-card" style="background:url('assets/chipas.jpg')">
+    Chipas
+  </ion-card>
+
+  <ion-card (click)="navigateToTech()" class="restaurant-card" style="background:url('assets/pasha.jpg')">
+    Pasha
+  </ion-card>
 </ion-content>
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab-button (click)="startCheckout()" size="small">
+    <ion-icon name="cart-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
