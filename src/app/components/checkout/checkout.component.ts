@@ -7,6 +7,7 @@ import { User } from 'src/app/models/User';
 import { Order } from 'src/app/models/Order';
 import { OrdersService } from 'src/app/services/Orders/orders.service';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalService } from 'src/app/services/local/local.service';
 
 @Component({
   selector: 'app-checkout',
@@ -32,7 +33,8 @@ export class CheckoutComponent implements OnInit {
     private authSvc: AuthenticationService,
     private alertCtrl: AlertController,
     private orderSvc: OrdersService,
-    private storage: NativeStorage
+    private storage: NativeStorage,
+    private localSvc: LocalService
   ) { }
 
   async ngOnInit() {
@@ -42,7 +44,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   async refresh() {
-    let drugsData = await this.storage.getItem("addedDrugs");
+    let drugsData = await this.localSvc.getAddedItems();
 
     if (drugsData) {
       if (this.addedItems.length > 0) {

@@ -4,6 +4,7 @@ import { Drug } from 'src/app/models/Drug';
 import { LoadingController, ModalController } from '@ionic/angular';
 import { CheckoutComponent } from 'src/app/components/checkout/checkout.component';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { LocalService } from 'src/app/services/local/local.service';
 
 @Component({
   selector: 'app-pharmacy',
@@ -25,7 +26,8 @@ export class PharmacyPage implements OnInit {
     private drugsSvc: DrugsService,
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
-    private storage: NativeStorage
+    private storage: NativeStorage,
+    private localSvc: LocalService
   ) { }
 
   ngOnInit() {
@@ -33,7 +35,6 @@ export class PharmacyPage implements OnInit {
   }
 
   async refresh(loader: boolean) {
-    console.log('in referes')
     try {
       if (loader) {
         let loader = await this.loadingCtrl.create({
@@ -44,7 +45,7 @@ export class PharmacyPage implements OnInit {
       //get drugs from backend
       this.drugs = await this.drugsSvc.getDrugsPaged(1, this.searchTerm);
       // gett items that are in cart
-      let data = await this.storage.getItem("addedDrugs");
+      let data = await this.localSvc.getAddedItems();
       // set count and price for display
       if (data) {
         this.addedItems = [];
@@ -116,7 +117,7 @@ export class PharmacyPage implements OnInit {
   }
 
   async startCheckout() {
-    let drugsData = await this.storage.getItem("addedDrugs");
+    let drugsData = await this.localSvc.getAddedItems();
 
     if (drugsData && drugsData.length > 0) {
       let modal = await this.modalCtrl.create(

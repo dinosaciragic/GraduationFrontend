@@ -74,3 +74,9 @@
     font-size: 24px;
     font-weight: bold;
 }
+
+.three-lines {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
